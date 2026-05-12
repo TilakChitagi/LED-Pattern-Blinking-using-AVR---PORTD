@@ -1,0 +1,30 @@
+#define F_CPU 16000000UL   // Defines CPU frequency as 16 MHz (needed for delay functions)
+#include <util/delay.h>    // Library for creating delays like _delay_ms()
+
+// Register address definitions (direct memory access to AVR I/O registers)
+#define DDRD_reg   (*(volatile unsigned char*)0x2A)   // Data Direction Register for Port D
+#define PORTD_reg  (*(volatile unsigned char*)0x2B)   // Output Register for Port D
+
+int main(void)
+{
+    // Set PD2 (pin 2 of Port D) as OUTPUT
+    // DDRD bit = 1 means OUTPUT, 0 means INPUT
+    DDRD_reg = DDRD_reg | 0x04;   // 0x04 = 00000100 → selects PD2
+
+    while (1)
+    {
+        // -------------------------
+        // Turn LED ON (PD2 HIGH)
+        // -------------------------
+        PORTD_reg = PORTD_reg | 0x04;   // Set bit 2 → output HIGH
+
+        _delay_ms(500);  // Wait 500 milliseconds
+
+        // -------------------------
+        // Turn LED OFF (PD2 LOW)
+        // -------------------------
+        PORTD_reg = PORTD_reg & (~0x04); // Clear bit 2 → output LOW
+
+        _delay_ms(500);  // Wait 500 milliseconds
+    }
+}
